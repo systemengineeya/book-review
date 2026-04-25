@@ -1,4 +1,4 @@
-package jp.systemsengineeya.bookreview.api;
+package jp.systemengineeya.bookreview.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

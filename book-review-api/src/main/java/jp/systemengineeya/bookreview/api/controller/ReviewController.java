@@ -1,8 +1,9 @@
-package jp.systemsengineeya.bookreview.api.controller;
+package jp.systemengineeya.bookreview.api.controller;
 
-import jp.systemsengineeya.bookreview.api.dto.Review;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import jp.systemengineeya.bookreview.api.dto.Review;
 
 import java.util.ArrayList;
 import java.util.List;

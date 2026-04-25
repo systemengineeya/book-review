@@ -1,4 +1,4 @@
-package jp.systemsengineeya.bookreview.api.dto;
+package jp.systemengineeya.bookreview.api.dto;
 
 public class Review {
     private Long id;
