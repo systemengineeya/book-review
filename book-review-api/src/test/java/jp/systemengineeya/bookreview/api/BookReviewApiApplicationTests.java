@@ -1,4 +1,4 @@
-package jp.systemsengineeya.bookreview.api;
+package jp.systemengineeya.bookreview.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
