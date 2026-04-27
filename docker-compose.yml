@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16
+    container_name: book-review-db
+    environment:
+      POSTGRES_DB: book_review
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+    # DBが本当に使える状態か確認
+    # docker ps で healthy / unhealthy 表示される
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # DBが異常停止したら自動再起動
+    # 手動 stop した場合は再起動しない
+    restart: unless-stopped
+
+volumes:
+  db-data:
+    name: book_review-db-data
+
+# NOTE:
+# - Spring Boot API サービスを追加する場合は、
+#   services セクションに新しいサービスを追加し、
+#   depends_on: [db] を設定してください。
+# - アプリの設定で PostgreSQL の接続文字列を
+#   jdbc:postgresql://db:5432/book_review として使います。
