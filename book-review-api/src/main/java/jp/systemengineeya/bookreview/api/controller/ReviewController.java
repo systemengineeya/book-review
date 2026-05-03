@@ -3,57 +3,68 @@ package jp.systemengineeya.bookreview.api.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jp.systemengineeya.bookreview.api.dto.Review;
+import jp.systemengineeya.bookreview.api.dto.ReviewDto;
+import jp.systemengineeya.bookreview.api.service.ReviewService;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/books/{bookId}/reviews")
 public class ReviewController {
 
-    // Mock data
-    private List<Review> reviews = new ArrayList<>();
-    private Long nextId = 1L;
+    private final ReviewService reviewService;
+    
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
 
     @PostMapping
-    public ResponseEntity<Review> createReview(@PathVariable Long bookId, @RequestBody Review review) {
-        review.setId(nextId++);
-        review.setBookId(bookId);
-        reviews.add(review);
-        return ResponseEntity.ok(review);
+    public ResponseEntity<ReviewDto> createReview(@PathVariable Long bookId, @RequestBody ReviewDto review) {
+        try {
+            ReviewDto createdReview = reviewService.createReview(bookId, review);
+            return ResponseEntity.ok(createdReview);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping
-    public ResponseEntity<List<Review>> getReviews(@PathVariable Long bookId) {
-        List<Review> bookReviews = reviews.stream().filter(r -> r.getBookId().equals(bookId)).collect(Collectors.toList());
-        return ResponseEntity.ok(bookReviews);
+    public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable Long bookId) {
+        try {
+            List<ReviewDto> reviews = reviewService.getReviewsByBookId(bookId);
+            return ResponseEntity.ok(reviews);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{reviewId}")
-    public ResponseEntity<Review> getReview(@PathVariable Long bookId, @PathVariable Long reviewId) {
-        Review review = reviews.stream().filter(r -> r.getId().equals(reviewId) && r.getBookId().equals(bookId)).findFirst().orElse(null);
-        if (review == null) {
+    public ResponseEntity<ReviewDto> getReview(@PathVariable Long bookId, @PathVariable Long reviewId) {
+        try {
+            ReviewDto review = reviewService.getReviewById(bookId, reviewId);
+            return ResponseEntity.ok(review);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(review);
     }
 
     @PatchMapping("/{reviewId}")
-    public ResponseEntity<Review> updateReview(@PathVariable Long bookId, @PathVariable Long reviewId, @RequestBody Review updatedReview) {
-        Review review = reviews.stream().filter(r -> r.getId().equals(reviewId) && r.getBookId().equals(bookId)).findFirst().orElse(null);
-        if (review == null) {
+    public ResponseEntity<ReviewDto> updateReview(@PathVariable Long bookId, @PathVariable Long reviewId, @RequestBody ReviewDto updatedReview) {
+        try {
+            ReviewDto review = reviewService.updateReview(bookId, reviewId, updatedReview);
+            return ResponseEntity.ok(review);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-        review.setContent(updatedReview.getContent());
-        review.setRating(updatedReview.getRating());
-        return ResponseEntity.ok(review);
     }
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(@PathVariable Long bookId, @PathVariable Long reviewId) {
-        reviews.removeIf(r -> r.getId().equals(reviewId) && r.getBookId().equals(bookId));
-        return ResponseEntity.noContent().build();
+        try {
+            reviewService.deleteReview(bookId, reviewId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

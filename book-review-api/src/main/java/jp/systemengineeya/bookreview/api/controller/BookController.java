@@ -3,54 +3,60 @@ package jp.systemengineeya.bookreview.api.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jp.systemengineeya.bookreview.api.dto.Book;
+import jp.systemengineeya.bookreview.api.dto.BookDto;
+import jp.systemengineeya.bookreview.api.service.BookService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/books")
 public class BookController {
 
-    // Mock data
-    private List<Book> books = new ArrayList<>();
-    private Long nextId = 1L;
+    private final BookService bookService;
+    
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
-        book.setId(nextId++);
-        books.add(book);
-        return ResponseEntity.ok(book);
+    public ResponseEntity<BookDto> createBook(@RequestBody BookDto book) {
+        BookDto createdBook = bookService.createBook(book);
+        return ResponseEntity.ok(createdBook);
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getBooks() {
+    public ResponseEntity<List<BookDto>> getBooks() {
+        List<BookDto> books = bookService.getAllBooks();
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<Book> getBook(@PathVariable Long bookId) {
-        Book book = books.stream().filter(b -> b.getId().equals(bookId)).findFirst().orElse(null);
-        if (book == null) {
+    public ResponseEntity<BookDto> getBook(@PathVariable Long bookId) {
+        try {
+            BookDto book = bookService.getBookById(bookId);
+            return ResponseEntity.ok(book);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(book);
     }
 
     @PatchMapping("/{bookId}")
-    public ResponseEntity<Book> updateBook(@PathVariable Long bookId, @RequestBody Book updatedBook) {
-        Book book = books.stream().filter(b -> b.getId().equals(bookId)).findFirst().orElse(null);
-        if (book == null) {
+    public ResponseEntity<BookDto> updateBook(@PathVariable Long bookId, @RequestBody BookDto updatedBook) {
+        try {
+            BookDto book = bookService.updateBook(bookId, updatedBook);
+            return ResponseEntity.ok(book);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-        book.setTitle(updatedBook.getTitle());
-        book.setAuthor(updatedBook.getAuthor());
-        return ResponseEntity.ok(book);
     }
 
     @DeleteMapping("/{bookId}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long bookId) {
-        books.removeIf(b -> b.getId().equals(bookId));
-        return ResponseEntity.noContent().build();
+        try {
+            bookService.deleteBook(bookId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
