@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jp.systemengineeya.bookreview.api.dto.ReviewDto;
+import jp.systemengineeya.bookreview.api.dto.request.ReviewRequest;
+import jp.systemengineeya.bookreview.api.dto.response.ReviewResponse;
 import jp.systemengineeya.bookreview.api.service.ReviewService;
 
 import java.util.List;
@@ -20,27 +21,27 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewDto> createReview(@PathVariable Long bookId, @RequestBody ReviewDto review) {
-        ReviewDto createdReview = reviewService.createReview(bookId, review);
+    public ResponseEntity<ReviewResponse> createReview(@PathVariable Long bookId, @RequestBody ReviewRequest review) {
+        ReviewResponse createdReview = reviewService.createReview(bookId, review);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
     }
 
     @GetMapping
-    public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable Long bookId) {
-        List<ReviewDto> reviews = reviewService.getReviewsByBookId(bookId);
+    public ResponseEntity<List<ReviewResponse>> getReviews(@PathVariable Long bookId) {
+        List<ReviewResponse> reviews = reviewService.getReviewsByBookId(bookId);
         return ResponseEntity.ok(reviews);
     }
 
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ReviewDto> getReview(@PathVariable Long bookId, @PathVariable Long reviewId) {
-        ReviewDto review = reviewService.getReviewById(bookId, reviewId);
+    public ResponseEntity<ReviewResponse> getReview(@PathVariable Long bookId, @PathVariable Long reviewId) {
+        ReviewResponse review = reviewService.getReviewById(bookId, reviewId);
         return ResponseEntity.ok(review);
     }
 
     @PatchMapping("/{reviewId}")
-    public ResponseEntity<ReviewDto> updateReview(@PathVariable Long bookId, @PathVariable Long reviewId,
-            @RequestBody ReviewDto updatedReview) {
-        ReviewDto review = reviewService.updateReview(bookId, reviewId, updatedReview);
+    public ResponseEntity<ReviewResponse> updateReview(@PathVariable Long bookId, @PathVariable Long reviewId,
+            @RequestBody ReviewRequest updatedReview) {
+        ReviewResponse review = reviewService.updateReview(bookId, reviewId, updatedReview);
         return ResponseEntity.ok(review);
     }
 

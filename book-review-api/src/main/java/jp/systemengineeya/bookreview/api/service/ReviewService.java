@@ -3,7 +3,9 @@ package jp.systemengineeya.bookreview.api.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import jp.systemengineeya.bookreview.api.dto.ReviewDto;
+
+import jp.systemengineeya.bookreview.api.dto.request.ReviewRequest;
+import jp.systemengineeya.bookreview.api.dto.response.ReviewResponse;
 import jp.systemengineeya.bookreview.api.entity.Review;
 import jp.systemengineeya.bookreview.api.entity.ReviewExample;
 import jp.systemengineeya.bookreview.api.exception.NotFoundException;
@@ -24,7 +26,7 @@ public class ReviewService {
         this.reviewDtoMapper = reviewDtoMapper;
     }
 
-    public ReviewDto createReview(Long bookId, ReviewDto review) {
+    public ReviewResponse createReview(Long bookId, ReviewRequest review) {
         if (bookMapper.selectByPrimaryKey(bookId) == null) {
             throw new NotFoundException("Book", bookId);
         }
@@ -35,7 +37,7 @@ public class ReviewService {
         return reviewDtoMapper.toDto(entity);
     }
 
-    public ReviewDto getReviewById(Long bookId, Long reviewId) {
+    public ReviewResponse getReviewById(Long bookId, Long reviewId) {
         Review entity = reviewMapper.selectByPrimaryKey(reviewId);
         if (entity == null || !entity.getBookId().equals(bookId)) {
             throw new NotFoundException("Review", reviewId);
@@ -43,7 +45,7 @@ public class ReviewService {
         return reviewDtoMapper.toDto(entity);
     }
 
-    public List<ReviewDto> getReviewsByBookId(Long bookId) {
+    public List<ReviewResponse> getReviewsByBookId(Long bookId) {
         if (bookMapper.selectByPrimaryKey(bookId) == null) {
             throw new NotFoundException("Book", bookId);
         }
@@ -55,7 +57,7 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public ReviewDto updateReview(Long bookId, Long reviewId, ReviewDto updatedReview) {
+    public ReviewResponse updateReview(Long bookId, Long reviewId, ReviewRequest updatedReview) {
         Review entity = reviewMapper.selectByPrimaryKey(reviewId);
         if (entity == null || !entity.getBookId().equals(bookId)) {
             throw new NotFoundException("Review", reviewId);

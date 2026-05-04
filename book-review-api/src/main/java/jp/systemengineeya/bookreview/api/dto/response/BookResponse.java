@@ -1,4 +1,4 @@
-package jp.systemengineeya.bookreview.api.dto;
+package jp.systemengineeya.bookreview.api.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewDto {
+public class BookResponse {
     private Long id;
-    private Long bookId;
-    private String content;
-    private Integer rating;
+    private String title;
+    private String author;
 }

@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
-import jp.systemengineeya.bookreview.api.dto.BookDto;
+import jp.systemengineeya.bookreview.api.dto.request.BookRequest;
+import jp.systemengineeya.bookreview.api.dto.response.BookResponse;
 import jp.systemengineeya.bookreview.api.entity.Book;
 import jp.systemengineeya.bookreview.api.entity.BookExample;
 import jp.systemengineeya.bookreview.api.exception.NotFoundException;
@@ -22,13 +23,13 @@ public class BookService {
         this.bookDtoMapper = bookDtoMapper;
     }
 
-    public BookDto createBook(BookDto book) {
+    public BookResponse createBook(BookRequest book) {
         Book entity = bookDtoMapper.toEntity(book);
         bookMapper.insertSelective(entity);
         return bookDtoMapper.toDto(entity);
     }
 
-    public BookDto getBookById(Long bookId) {
+    public BookResponse getBookById(Long bookId) {
         Book entity = bookMapper.selectByPrimaryKey(bookId);
         if (entity == null) {
             throw new NotFoundException("Book", bookId);
@@ -36,14 +37,14 @@ public class BookService {
         return bookDtoMapper.toDto(entity);
     }
 
-    public List<BookDto> getAllBooks() {
+    public List<BookResponse> getAllBooks() {
         BookExample example = new BookExample();
         return bookMapper.selectByExample(example).stream()
                 .map(bookDtoMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public BookDto updateBook(Long bookId, BookDto updatedBook) {
+    public BookResponse updateBook(Long bookId, BookRequest updatedBook) {
         Book book = bookMapper.selectByPrimaryKey(bookId);
         if (book == null) {
             throw new NotFoundException("Book", bookId);

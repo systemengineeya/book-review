@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jp.systemengineeya.bookreview.api.dto.BookDto;
+import jp.systemengineeya.bookreview.api.dto.request.BookRequest;
+import jp.systemengineeya.bookreview.api.dto.response.BookResponse;
 import jp.systemengineeya.bookreview.api.service.BookService;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -21,26 +21,26 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<BookDto> createBook(@RequestBody BookDto book) {
-        BookDto createdBook = bookService.createBook(book);
+    public ResponseEntity<BookResponse> createBook(@RequestBody BookRequest book) {
+        BookResponse createdBook = bookService.createBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
     }
 
     @GetMapping
-    public ResponseEntity<List<BookDto>> getBooks() {
-        List<BookDto> books = bookService.getAllBooks();
+    public ResponseEntity<List<BookResponse>> getBooks() {
+        List<BookResponse> books = bookService.getAllBooks();
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<BookDto> getBook(@PathVariable Long bookId) {
-        BookDto book = bookService.getBookById(bookId);
+    public ResponseEntity<BookResponse> getBook(@PathVariable Long bookId) {
+        BookResponse book = bookService.getBookById(bookId);
         return ResponseEntity.ok(book);
     }
 
     @PatchMapping("/{bookId}")
-    public ResponseEntity<BookDto> updateBook(@PathVariable Long bookId, @RequestBody BookDto updatedBook) {
-        BookDto book = bookService.updateBook(bookId, updatedBook);
+    public ResponseEntity<BookResponse> updateBook(@PathVariable Long bookId, @RequestBody BookRequest updatedBook) {
+        BookResponse book = bookService.updateBook(bookId, updatedBook);
         return ResponseEntity.ok(book);
     }
 
