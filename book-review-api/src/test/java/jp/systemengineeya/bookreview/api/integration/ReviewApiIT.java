@@ -109,10 +109,11 @@ class ReviewApiIT {
     }
 
     void 更新後取得できる() throws Exception {
-        mockMvc.perform(get("/books/{bookId}/reviews/{reviewId}", bookId, reviewId))
+        mockMvc.perform(get("/books/{bookId}/reviews", bookId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").value("かなり良い本です"))
-                .andExpect(jsonPath("$.rating").value(4));
+                .andExpect(jsonPath("$[0].id").value(reviewId))
+                .andExpect(jsonPath("$[0].content").value("かなり良い本です"))
+                .andExpect(jsonPath("$[0].rating").value(4));
     }
 
     void reviewを削除できる() throws Exception {
