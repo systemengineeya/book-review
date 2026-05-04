@@ -1,4 +1,4 @@
-package jp.systemengineeya.bookreview.api.mapper;
+package jp.systemengineeya.bookreview.api.mapper.dto;
 
 import java.util.List;
 import org.mapstruct.Mapper;
