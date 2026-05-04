@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/books")
-@Slf4j
 public class BookController {
 
     private final BookService bookService;
