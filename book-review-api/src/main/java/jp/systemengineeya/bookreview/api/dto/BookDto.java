@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Review {
+public class BookDto {
     private Long id;
-    private Long bookId;
-    private String content;
-    private int rating;
+    private String title;
+    private String author;
 }
