@@ -2,9 +2,9 @@ spring:
   application:
     name: book-review-api
   datasource:
-    url: jdbc:postgresql://localhost:5432/book_review
-    username: postgres
-    password: password
+    url: jdbc:postgresql://${DB_HOST}:5432/book_review
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   flyway:
     enabled: true
 
