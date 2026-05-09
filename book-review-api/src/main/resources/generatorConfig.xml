@@ -24,10 +24,13 @@
                 targetPackage="jp.systemengineeya.bookreview.api.mapper.mybatis"
                 targetProject="src/main/java"/>
         <!-- テーブル指定 -->
-        <table tableName="book" domainObjectName="Book">
+        <!-- <table tableName="book" domainObjectName="Book">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
         </table>
         <table tableName="review" domainObjectName="Review">
+            <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+        </table> -->
+        <table tableName="book_image" domainObjectName="BookImage">
             <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
         </table>
     </context>
