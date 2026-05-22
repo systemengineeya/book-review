@@ -1,8 +1,7 @@
-INSERT INTO book (id, title, author)
+INSERT INTO book (title, author)
 VALUES
-    (1, 'Spring Boot実践入門', '山田太郎'),
-    (2, 'Docker & LocalStackハンズオン', '鈴木花子')
-ON CONFLICT (id) DO NOTHING;
+    ('Spring Boot実践入門', '山田太郎'),
+    ('Docker & LocalStackハンズオン', '鈴木花子');
 
 INSERT INTO book_image (book_id, s3_key)
 VALUES
