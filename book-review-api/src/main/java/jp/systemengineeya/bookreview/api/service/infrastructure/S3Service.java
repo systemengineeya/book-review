@@ -1,0 +1,86 @@
+package jp.systemengineeya.bookreview.api.service.infrastructure;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class S3Service {
+
+    private final S3Client s3Client;
+
+    @Value("${app.s3.bucket}")
+    private String bucket;
+
+    public String upload(Path filePath, String key) {
+
+        PutObjectRequest request = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+        s3Client.putObject(request, filePath);
+
+        return "https://" + bucket + ".s3.amazonaws.com/" + key;
+    }
+
+    public String upload(MultipartFile file, String key) throws IOException {
+
+        PutObjectRequest request = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .contentType(file.getContentType())
+                .build();
+
+        s3Client.putObject(
+                request,
+                RequestBody.fromInputStream(
+                        file.getInputStream(),
+                        file.getSize()));
+
+        return "https://" + bucket + ".s3.amazonaws.com/" + key;
+    }
+
+    public String upload(MultipartFile file) throws IOException {
+
+        String extension = getExtension(
+                file.getOriginalFilename());
+
+        String key = UUID.randomUUID()
+                + "."
+                + extension;
+
+        PutObjectRequest request = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .contentType(file.getContentType())
+                .build();
+
+        s3Client.putObject(
+                request,
+                RequestBody.fromInputStream(
+                        file.getInputStream(),
+                        file.getSize()));
+        return key;
+    }
+
+    private String getExtension(String fileName) {
+
+        if (fileName == null || !fileName.contains(".")) {
+            throw new IllegalArgumentException(
+                    "Invalid file name: " + fileName);
+        }
+
+        return fileName.substring(
+                fileName.lastIndexOf(".") + 1);
+    }
+}
