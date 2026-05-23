@@ -6,4 +6,5 @@ CREATE TABLE book_image (
     CONSTRAINT fk_book_image_book_id
         FOREIGN KEY (book_id)
         REFERENCES book(id)
+        ON DELETE CASCADE
 );

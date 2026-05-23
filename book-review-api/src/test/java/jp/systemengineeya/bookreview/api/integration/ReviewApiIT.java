@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -17,6 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 /**
  * Integration Test（MockMvc）
@@ -25,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("local")
 class ReviewApiIT {
 
     @Autowired
@@ -45,28 +49,28 @@ class ReviewApiIT {
     }
 
     void bookを登録する() throws Exception {
-        @SuppressWarnings("null")
-        MvcResult result = mockMvc.perform(post("/books")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {
-                          "title":"Java入門",
-                          "author":"山田太郎"
-                        }
-                        """))
-                .andExpect(status().isCreated())
-                .andReturn();
+            MockMultipartFile image = new MockMultipartFile(
+                            "images",
+                            "test.png",
+                            MediaType.IMAGE_PNG_VALUE,
+                            "dummy image".getBytes());
 
-        String response = result.getResponse().getContentAsString();
+            MvcResult result = mockMvc.perform(multipart("/books")
+                            .file(image)
+                            .param("title", "Java入門")
+                            .param("author", "山田太郎"))
+                            .andExpect(status().isCreated())
+                            .andReturn();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode json = objectMapper.readTree(response);
+            String response = result.getResponse().getContentAsString();
 
-        bookId = json.get("id").asLong();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode json = objectMapper.readTree(response);
+
+            bookId = json.get("id").asLong();
     }
 
     void reviewを登録する() throws Exception {
-        @SuppressWarnings("null")
         MvcResult result = mockMvc.perform(post("/books/{bookId}/reviews", bookId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -94,7 +98,6 @@ class ReviewApiIT {
                 .andExpect(jsonPath("$.rating").value(5));
     }
 
-    @SuppressWarnings("null")
     void reviewを更新できる() throws Exception {
         mockMvc.perform(patch("/books/{bookId}/reviews/{reviewId}", bookId, reviewId)
                 .contentType(MediaType.APPLICATION_JSON)

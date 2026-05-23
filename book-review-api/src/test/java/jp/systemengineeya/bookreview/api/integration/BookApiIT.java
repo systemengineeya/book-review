@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -14,15 +16,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 /**
  * Integration Test（MockMvc）
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("local")
 class BookApiIT {
 
     @Autowired
@@ -41,15 +44,16 @@ class BookApiIT {
     }
 
     void 登録できる() throws Exception {
-        @SuppressWarnings("null")
-        MvcResult result = mockMvc.perform(post("/books")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {
-                          "title":"Java入門",
-                          "author":"山田太郎"
-                        }
-                        """))
+        MockMultipartFile image = new MockMultipartFile(
+                "images",
+                "test.png",
+                MediaType.IMAGE_PNG_VALUE,
+                "dummy image".getBytes());
+
+        MvcResult result = mockMvc.perform(multipart("/books")
+                .file(image)
+                .param("title", "Java入門")
+                .param("author", "山田太郎"))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -69,7 +73,6 @@ class BookApiIT {
                 .andExpect(jsonPath("$.author").value("山田太郎"));
     }
 
-    @SuppressWarnings("null")
     void 更新できる() throws Exception {
         mockMvc.perform(patch("/books/{bookId}", bookId)
                 .contentType(MediaType.APPLICATION_JSON)
