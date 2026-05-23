@@ -45,7 +45,6 @@ public class BookService {
         }
         Book entity = bookDtoMapper.toEntity(book);
         bookMapper.insertSelective(entity);
-        // TODO: 
         for (String key : keys) {
             BookImage bookImage = new BookImage();
             bookImage.setBookId(entity.getId());
@@ -89,6 +88,7 @@ public class BookService {
     }
 
     public void deleteBook(Long bookId) {
+        // TODO: 画像を削除する
         int count = bookMapper.deleteByPrimaryKey(bookId);
         if (count == 0) {
             throw new NotFoundException("Book", bookId);
