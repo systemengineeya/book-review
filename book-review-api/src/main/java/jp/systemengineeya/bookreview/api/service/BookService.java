@@ -12,6 +12,7 @@ import jp.systemengineeya.bookreview.api.dto.response.BookResponse;
 import jp.systemengineeya.bookreview.api.entity.Book;
 import jp.systemengineeya.bookreview.api.entity.BookExample;
 import jp.systemengineeya.bookreview.api.entity.BookImage;
+import jp.systemengineeya.bookreview.api.entity.BookImageExample;
 import jp.systemengineeya.bookreview.api.exception.NotFoundException;
 import jp.systemengineeya.bookreview.api.mapper.dto.BookDtoMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.BookImageMapper;
@@ -88,7 +89,17 @@ public class BookService {
     }
 
     public void deleteBook(Long bookId) {
-        // TODO: 画像を削除する
+        BookImageExample bookImageExample = new BookImageExample();
+        bookImageExample.createCriteria().andBookIdEqualTo(bookId);
+        List<BookImage> images = bookImageMapper.selectByExample(bookImageExample);
+
+        for (BookImage image : images) {
+            try {
+                s3Service.delete(image.getS3Key());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to delete image from S3: " + image.getS3Key(), e);
+            }
+        }
         int count = bookMapper.deleteByPrimaryKey(bookId);
         if (count == 0) {
             throw new NotFoundException("Book", bookId);
