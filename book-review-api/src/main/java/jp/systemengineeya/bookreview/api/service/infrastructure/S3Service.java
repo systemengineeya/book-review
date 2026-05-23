@@ -10,7 +10,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.UUID;
 
 @Service
@@ -21,34 +20,6 @@ public class S3Service {
 
     @Value("${app.s3.bucket}")
     private String bucket;
-
-    public String upload(Path filePath, String key) {
-
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(bucket)
-                .key(key)
-                .build();
-        s3Client.putObject(request, filePath);
-
-        return "https://" + bucket + ".s3.amazonaws.com/" + key;
-    }
-
-    public String upload(MultipartFile file, String key) throws IOException {
-
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(bucket)
-                .key(key)
-                .contentType(file.getContentType())
-                .build();
-
-        s3Client.putObject(
-                request,
-                RequestBody.fromInputStream(
-                        file.getInputStream(),
-                        file.getSize()));
-
-        return "https://" + bucket + ".s3.amazonaws.com/" + key;
-    }
 
     public String upload(MultipartFile file) throws IOException {
 
