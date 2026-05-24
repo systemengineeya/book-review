@@ -4,6 +4,8 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.net.URI;
 
@@ -24,6 +26,25 @@ public class LocalS3Config {
                         StaticCredentialsProvider.create(
                                 AwsBasicCredentials.create("test", "test")))
                 .forcePathStyle(true)
+                .build();
+    }
+
+    @Bean
+    public S3Presigner s3Presigner() {
+
+        return S3Presigner.builder()
+                .endpointOverride(
+                        URI.create("http://localhost:4566"))
+                .region(Region.AP_NORTHEAST_1)
+                .credentialsProvider(
+                        StaticCredentialsProvider.create(
+                                AwsBasicCredentials.create(
+                                        "test",
+                                        "test")))
+                .serviceConfiguration(
+                        S3Configuration.builder()
+                                .pathStyleAccessEnabled(true)
+                                .build())
                 .build();
     }
 }

@@ -46,14 +46,19 @@ public class BookService {
         }
         Book entity = bookDtoMapper.toEntity(book);
         bookMapper.insertSelective(entity);
+        List<BookResponse.BookImage> bookImages = new ArrayList<>();
         for (String key : keys) {
             BookImage bookImage = new BookImage();
             bookImage.setBookId(entity.getId());
             bookImage.setS3Key(key);
             bookImageMapper.insert(bookImage);
         }
-        // TODO: 画像をbookに含める
-        return bookDtoMapper.toDto(entity);
+        for (String key : keys) {
+            bookImages.add(new BookResponse.BookImage(s3Service.generatePresignedUrl(key)));
+        }
+        BookResponse response = bookDtoMapper.toDto(entity);
+        response.setImages(bookImages);
+        return response;
     }
 
     public BookResponse getBookById(Long bookId) {
@@ -61,11 +66,13 @@ public class BookService {
         if (entity == null) {
             throw new NotFoundException("Book", bookId);
         }
+        // TODO: urlを設定する
         return bookDtoMapper.toDto(entity);
     }
 
     public List<BookResponse> getAllBooks() {
         BookExample example = new BookExample();
+        // TODO: urlを設定する
         return bookMapper.selectByExample(example).stream()
                 .map(bookDtoMapper::toDto)
                 .collect(Collectors.toList());

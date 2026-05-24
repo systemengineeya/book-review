@@ -1,5 +1,7 @@
 package jp.systemengineeya.bookreview.api.dto.response;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,4 +15,13 @@ public class BookResponse {
     private Long id;
     private String title;
     private String author;
+    private List<BookImage> images;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class BookImage {
+        private String url;
+    }
 }
