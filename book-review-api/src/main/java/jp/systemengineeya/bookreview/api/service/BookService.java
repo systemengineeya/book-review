@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import jp.systemengineeya.bookreview.api.dto.request.BookRequest;
 import jp.systemengineeya.bookreview.api.dto.response.BookResponse;
 import jp.systemengineeya.bookreview.api.entity.Book;
-import jp.systemengineeya.bookreview.api.entity.BookExample;
 import jp.systemengineeya.bookreview.api.entity.BookImage;
 import jp.systemengineeya.bookreview.api.entity.BookImageExample;
 import jp.systemengineeya.bookreview.api.entity.custom.BookWithImages;
@@ -80,10 +79,18 @@ public class BookService {
     }
 
     public List<BookResponse> getAllBooks() {
-        BookExample example = new BookExample();
-        // TODO: urlを設定する
-        return bookMapper.selectByExample(example).stream()
-                .map(bookDtoMapper::toDto)
+        List<BookWithImages> books = bookCustomMapper.selectBookWithImages(null);
+        return books.stream()
+                .map(book -> {
+                    BookResponse response = bookDtoMapper.toDto(book);
+                    List<BookResponse.BookImage> images = book.getImages().stream()
+                            .map(BookImage::getS3Key)
+                            .map(s3Service::generatePresignedUrl)
+                            .map(BookResponse.BookImage::new)
+                            .collect(Collectors.toList());
+                    response.setImages(images);
+                    return response;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -101,6 +108,7 @@ public class BookService {
         }
 
         bookMapper.updateByPrimaryKeySelective(book);
+        // TODO: urlを設定する
         return bookDtoMapper.toDto(book);
     }
 

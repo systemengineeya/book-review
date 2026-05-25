@@ -9,7 +9,8 @@
         <result property="title" column="title"/>
         <result property="author" column="author"/>
         <collection property="images"
-                    ofType="jp.systemengineeya.bookreview.api.entity.BookImage">
+                    ofType="jp.systemengineeya.bookreview.api.entity.BookImage"
+                    notNullColumn="image_id">
             <id property="id" column="image_id"/>
             <result property="bookId" column="book_id"/>
             <result property="s3Key" column="s3_key"/>
