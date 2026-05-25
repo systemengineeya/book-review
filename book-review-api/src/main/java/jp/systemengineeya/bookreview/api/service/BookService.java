@@ -13,10 +13,12 @@ import jp.systemengineeya.bookreview.api.entity.Book;
 import jp.systemengineeya.bookreview.api.entity.BookExample;
 import jp.systemengineeya.bookreview.api.entity.BookImage;
 import jp.systemengineeya.bookreview.api.entity.BookImageExample;
+import jp.systemengineeya.bookreview.api.entity.custom.BookWithImages;
 import jp.systemengineeya.bookreview.api.exception.NotFoundException;
 import jp.systemengineeya.bookreview.api.mapper.dto.BookDtoMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.BookImageMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.BookMapper;
+import jp.systemengineeya.bookreview.api.mapper.mybatis.custom.BookCustomMapper;
 import jp.systemengineeya.bookreview.api.service.infrastructure.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ public class BookService {
     private final BookDtoMapper bookDtoMapper;
     private final S3Service s3Service;
     private final BookImageMapper bookImageMapper;
+    private final BookCustomMapper bookCustomMapper;
 
     public BookResponse createBook(BookRequest book, List<MultipartFile> images) {
         List<String> keys = new ArrayList<>();
@@ -46,13 +49,13 @@ public class BookService {
         }
         Book entity = bookDtoMapper.toEntity(book);
         bookMapper.insertSelective(entity);
-        List<BookResponse.BookImage> bookImages = new ArrayList<>();
         for (String key : keys) {
             BookImage bookImage = new BookImage();
             bookImage.setBookId(entity.getId());
             bookImage.setS3Key(key);
             bookImageMapper.insert(bookImage);
         }
+        List<BookResponse.BookImage> bookImages = new ArrayList<>();
         for (String key : keys) {
             bookImages.add(new BookResponse.BookImage(s3Service.generatePresignedUrl(key)));
         }
@@ -62,12 +65,18 @@ public class BookService {
     }
 
     public BookResponse getBookById(Long bookId) {
-        Book entity = bookMapper.selectByPrimaryKey(bookId);
-        if (entity == null) {
+        List<BookWithImages> bookWithImages = bookCustomMapper.selectBookWithImages(bookId);
+        if (bookWithImages.isEmpty()) {
             throw new NotFoundException("Book", bookId);
         }
-        // TODO: urlを設定する
-        return bookDtoMapper.toDto(entity);
+        BookResponse response = bookDtoMapper.toDto(bookWithImages.get(0));
+        List<BookResponse.BookImage> bookImages = new ArrayList<>();
+        for (String key : bookWithImages.get(0).getImages().stream().map(BookImage::getS3Key)
+                .collect(Collectors.toList())) {
+            bookImages.add(new BookResponse.BookImage(s3Service.generatePresignedUrl(key)));
+        }
+        response.setImages(bookImages);
+        return response;
     }
 
     public List<BookResponse> getAllBooks() {

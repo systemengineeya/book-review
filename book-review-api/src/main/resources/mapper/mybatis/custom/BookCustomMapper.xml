@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.systemengineeya.bookreview.api.mapper.mybatis.custom.BookCustomMapper">
+    <resultMap id="bookWithImagesResultMap"
+               type="jp.systemengineeya.bookreview.api.entity.custom.BookWithImages">
+        <id property="id" column="book_id"/>
+        <result property="title" column="title"/>
+        <result property="author" column="author"/>
+        <collection property="images"
+                    ofType="jp.systemengineeya.bookreview.api.entity.BookImage">
+            <id property="id" column="image_id"/>
+            <result property="bookId" column="book_id"/>
+            <result property="s3Key" column="s3_key"/>
+        </collection>
+    </resultMap>
+    <select id="selectBookWithImages"
+        parameterType="long"
+        resultMap="bookWithImagesResultMap">
+    SELECT
+        b.id AS book_id,
+        b.title,
+        b.author,
+        bi.id AS image_id,
+        bi.book_id,
+        bi.s3_key
+    FROM book b
+    LEFT JOIN book_image bi
+        ON b.id = bi.book_id
+        <where>
+            <if test="id != null">
+            b.id = #{id}
+            </if>
+        </where>
+    </select>
+</mapper>
