@@ -80,11 +80,7 @@ public class BookService {
         return books.stream()
                 .map(book -> {
                     BookResponse response = bookDtoMapper.toDto(book);
-                    List<BookResponse.BookImage> images = book.getImages().stream()
-                            .map(BookImage::getS3Key)
-                            .map(s3Service::generatePresignedUrl)
-                            .map(BookResponse.BookImage::new)
-                            .collect(Collectors.toList());
+                    List<BookResponse.BookImage> images = getBookImages(book);
                     response.setImages(images);
                     return response;
                 })
