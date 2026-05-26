@@ -2,6 +2,7 @@ package jp.systemengineeya.bookreview.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,12 +70,8 @@ public class BookService {
             throw new NotFoundException("Book", bookId);
         }
         BookResponse response = bookDtoMapper.toDto(bookWithImages.get(0));
-        List<BookResponse.BookImage> bookImages = new ArrayList<>();
-        for (String key : bookWithImages.get(0).getImages().stream().map(BookImage::getS3Key)
-                .collect(Collectors.toList())) {
-            bookImages.add(new BookResponse.BookImage(s3Service.generatePresignedUrl(key)));
-        }
-        response.setImages(bookImages);
+        List<BookResponse.BookImage> images = getBookImages(bookWithImages.get(0));
+        response.setImages(images);
         return response;
     }
 
@@ -108,8 +105,20 @@ public class BookService {
         }
 
         bookMapper.updateByPrimaryKeySelective(book);
-        // TODO: urlを設定する
-        return bookDtoMapper.toDto(book);
+        BookWithImages bookWithImages = bookCustomMapper.selectBookWithImages(bookId).get(0);
+        BookResponse response = bookDtoMapper.toDto(bookWithImages);
+        List<BookResponse.BookImage> images = getBookImages(bookWithImages);
+        response.setImages(images);
+        return response;
+    }
+    
+    private List<BookResponse.BookImage> getBookImages(BookWithImages bookWithImages) {
+        return bookWithImages.getImages().stream()
+                .map(BookImage::getS3Key)
+                .filter(Objects::nonNull)
+                .map(s3Service::generatePresignedUrl)
+                .map(BookResponse.BookImage::new)
+                .collect(Collectors.toList());
     }
 
     public void deleteBook(Long bookId) {
