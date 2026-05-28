@@ -87,4 +87,14 @@ public class BookImageService {
                                 image.getS3Key()))
                 .build();
     }
+
+    public void deleteAllByBookId(Long bookId) {
+        BookImageExample example = new BookImageExample();
+        example.createCriteria()
+                .andBookIdEqualTo(bookId);
+        List<BookImage> images = bookImageMapper.selectByExample(example);
+        for (BookImage image : images) {
+            delete(bookId, image.getId());
+        }
+    }
 }

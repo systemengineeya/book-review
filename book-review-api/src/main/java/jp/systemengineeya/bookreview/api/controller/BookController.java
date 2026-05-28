@@ -7,6 +7,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jp.systemengineeya.bookreview.api.dto.request.BookRequest;
 import jp.systemengineeya.bookreview.api.dto.response.BookResponse;
+import jp.systemengineeya.bookreview.api.dto.result.BookResult;
+import jp.systemengineeya.bookreview.api.mapper.dto.BookResponseMapper;
 import jp.systemengineeya.bookreview.api.service.BookService;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,7 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+    private final BookResponseMapper bookResponseMapper;
 
     @PostMapping
     public ResponseEntity<BookResponse> createBook(
@@ -30,27 +33,27 @@ public class BookController {
                 .title(title)
                 .author(author)
                 .build();
-        BookResponse createdBook = bookService.createBook(book, images);
+        BookResult createdBookResult = bookService.createBook(book, images);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookResponseMapper.toResponse(createdBookResult));
     }
 
     @GetMapping
     public ResponseEntity<List<BookResponse>> getBooks() {
-        List<BookResponse> books = bookService.getAllBooks();
-        return ResponseEntity.ok(books);
+        List<BookResult> bookResults = bookService.getAllBooks();
+        return ResponseEntity.ok(bookResponseMapper.toResponseList(bookResults));
     }
 
     @GetMapping("/{bookId}")
     public ResponseEntity<BookResponse> getBook(@PathVariable Long bookId) {
-        BookResponse book = bookService.getBookById(bookId);
-        return ResponseEntity.ok(book);
+        BookResult bookResult = bookService.getBookById(bookId);
+        return ResponseEntity.ok(bookResponseMapper.toResponse(bookResult));
     }
 
     @PatchMapping("/{bookId}")
     public ResponseEntity<BookResponse> updateBook(@PathVariable Long bookId, @RequestBody BookRequest updatedBook) {
-        BookResponse book = bookService.updateBook(bookId, updatedBook);
-        return ResponseEntity.ok(book);
+        BookResult bookResult = bookService.updateBook(bookId, updatedBook);
+        return ResponseEntity.ok(bookResponseMapper.toResponse(bookResult));
     }
 
     @DeleteMapping("/{bookId}")

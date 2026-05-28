@@ -2,24 +2,20 @@ package jp.systemengineeya.bookreview.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import jp.systemengineeya.bookreview.api.dto.request.BookRequest;
-import jp.systemengineeya.bookreview.api.dto.response.BookResponse;
+import jp.systemengineeya.bookreview.api.dto.result.BookImageResult;
+import jp.systemengineeya.bookreview.api.dto.result.BookResult;
 import jp.systemengineeya.bookreview.api.entity.Book;
-import jp.systemengineeya.bookreview.api.entity.BookImage;
-import jp.systemengineeya.bookreview.api.entity.BookImageExample;
-import jp.systemengineeya.bookreview.api.entity.custom.BookWithImages;
+import jp.systemengineeya.bookreview.api.entity.BookExample;
 import jp.systemengineeya.bookreview.api.exception.NotFoundException;
 import jp.systemengineeya.bookreview.api.mapper.dto.BookDtoMapper;
+import jp.systemengineeya.bookreview.api.mapper.dto.BookResultMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.BookImageMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.BookMapper;
-import jp.systemengineeya.bookreview.api.mapper.mybatis.custom.BookCustomMapper;
-import jp.systemengineeya.bookreview.api.service.infrastructure.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,63 +27,43 @@ public class BookService {
 
     private final BookMapper bookMapper;
     private final BookDtoMapper bookDtoMapper;
-    private final S3Service s3Service;
-    private final BookImageMapper bookImageMapper;
-    private final BookCustomMapper bookCustomMapper;
+    private final BookImageService bookImageService;
+    private final BookResultMapper bookResultMapper;
 
-    public BookResponse createBook(BookRequest book, List<MultipartFile> images) {
-        List<String> keys = new ArrayList<>();
-        if (images != null && !images.isEmpty()) {
-            for (MultipartFile image : images) {
-                try {
-                    String key = s3Service.upload(image);
-                    keys.add(key);
-                } catch (Exception e) {
-                    throw new RuntimeException("Failed to upload image", e);
-                }
-            }
-        }
+    public BookResult createBook(BookRequest book, List<MultipartFile> images) {
         Book entity = bookDtoMapper.toEntity(book);
         bookMapper.insertSelective(entity);
-        for (String key : keys) {
-            BookImage bookImage = new BookImage();
-            bookImage.setBookId(entity.getId());
-            bookImage.setS3Key(key);
-            bookImageMapper.insert(bookImage);
+        
+        List<BookImageResult> bookImageResults = new ArrayList<>();
+        if (images != null && !images.isEmpty()) {
+            for (MultipartFile image : images) {
+                BookImageResult bookImageResult = bookImageService.upload(entity.getId(), image);
+                bookImageResults.add(bookImageResult);
+            }
         }
-        List<BookResponse.BookImage> bookImages = new ArrayList<>();
-        for (String key : keys) {
-            bookImages.add(new BookResponse.BookImage(s3Service.generatePresignedUrl(key)));
-        }
-        BookResponse response = bookDtoMapper.toDto(entity);
-        response.setImages(bookImages);
-        return response;
+        return bookResultMapper.toResult(entity, bookImageResults);
     }
 
-    public BookResponse getBookById(Long bookId) {
-        List<BookWithImages> bookWithImages = bookCustomMapper.selectBookWithImages(bookId);
-        if (bookWithImages.isEmpty()) {
+    public BookResult getBookById(Long bookId) {
+        Book book = bookMapper.selectByPrimaryKey(bookId);
+        if (book == null) {
             throw new NotFoundException("Book", bookId);
         }
-        BookResponse response = bookDtoMapper.toDto(bookWithImages.get(0));
-        List<BookResponse.BookImage> images = getBookImages(bookWithImages.get(0));
-        response.setImages(images);
-        return response;
+        List<BookImageResult> bookImageResults = bookImageService.findByBookId(bookId);
+        return bookResultMapper.toResult(book, bookImageResults);
     }
 
-    public List<BookResponse> getAllBooks() {
-        List<BookWithImages> books = bookCustomMapper.selectBookWithImages(null);
-        return books.stream()
-                .map(book -> {
-                    BookResponse response = bookDtoMapper.toDto(book);
-                    List<BookResponse.BookImage> images = getBookImages(book);
-                    response.setImages(images);
-                    return response;
-                })
-                .collect(Collectors.toList());
+    public List<BookResult> getAllBooks() {
+        List<Book> books = bookMapper.selectByExample(new BookExample());
+        List<BookResult> bookResults = new ArrayList<>();
+        for (Book book : books) {
+            List<BookImageResult> bookImageResults = bookImageService.findByBookId(book.getId());
+            bookResults.add(bookResultMapper.toResult(book, bookImageResults));
+        }
+        return bookResults;
     }
 
-    public BookResponse updateBook(Long bookId, BookRequest updatedBook) {
+    public BookResult updateBook(Long bookId, BookRequest updatedBook) {
         Book book = bookMapper.selectByPrimaryKey(bookId);
         if (book == null) {
             throw new NotFoundException("Book", bookId);
@@ -99,36 +75,15 @@ public class BookService {
         if (updatedBook.getAuthor() != null) {
             book.setAuthor(updatedBook.getAuthor());
         }
-
         bookMapper.updateByPrimaryKeySelective(book);
-        BookWithImages bookWithImages = bookCustomMapper.selectBookWithImages(bookId).get(0);
-        BookResponse response = bookDtoMapper.toDto(bookWithImages);
-        List<BookResponse.BookImage> images = getBookImages(bookWithImages);
-        response.setImages(images);
-        return response;
-    }
-    
-    private List<BookResponse.BookImage> getBookImages(BookWithImages bookWithImages) {
-        return bookWithImages.getImages().stream()
-                .map(BookImage::getS3Key)
-                .filter(Objects::nonNull)
-                .map(s3Service::generatePresignedUrl)
-                .map(BookResponse.BookImage::new)
-                .collect(Collectors.toList());
+        List<BookImageResult> bookImageResults = bookImageService.findByBookId(bookId);
+        return bookResultMapper.toResult(
+                book,
+                bookImageResults);
     }
 
     public void deleteBook(Long bookId) {
-        BookImageExample bookImageExample = new BookImageExample();
-        bookImageExample.createCriteria().andBookIdEqualTo(bookId);
-        List<BookImage> images = bookImageMapper.selectByExample(bookImageExample);
-
-        for (BookImage image : images) {
-            try {
-                s3Service.delete(image.getS3Key());
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to delete image from S3: " + image.getS3Key(), e);
-            }
-        }
+        bookImageService.deleteAllByBookId(bookId);
         int count = bookMapper.deleteByPrimaryKey(bookId);
         if (count == 0) {
             throw new NotFoundException("Book", bookId);
