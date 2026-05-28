@@ -33,6 +33,10 @@ Spring Bootで実装し、基本的なCRUD操作を提供します。
 - PATCH /books/{bookId}
 - DELETE /books/{bookId}
 
+### Book Image
+- POST /books/{bookId}/images
+- DELETE /books/{bookId}/images/{imageId}
+
 ### Review
 - POST /books/{bookId}/reviews
 - GET /books/{bookId}/reviews
