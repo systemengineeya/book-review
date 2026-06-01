@@ -17,4 +17,12 @@ public class GlobalExceptionHandler {
                 .notFound()
                 .build();
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handle(RuntimeException e) {
+        log.error("Unexpected error occurred", e);
+        return ResponseEntity
+                .status(500)
+                .build();
+    }
 }

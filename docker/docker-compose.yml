@@ -22,14 +22,17 @@ services:
     # DBが異常停止したら自動再起動
     # 手動 stop した場合は再起動しない
     restart: unless-stopped
+  localstack:
+    image: localstack/localstack:3.7
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+    volumes:
+    # LocalStack の初期化スクリプトと、S3 にアップロードする画像をマウント
+      - ./localstack/init:/etc/localstack/init/ready.d
+      - ./localstack/images:/images
 
 volumes:
   db-data:
     name: book_review-db-data
-
-# NOTE:
-# - Spring Boot API サービスを追加する場合は、
-#   services セクションに新しいサービスを追加し、
-#   depends_on: [db] を設定してください。
-# - アプリの設定で PostgreSQL の接続文字列を
-#   jdbc:postgresql://db:5432/book_review として使います。

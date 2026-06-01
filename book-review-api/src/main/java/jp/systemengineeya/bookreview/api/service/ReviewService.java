@@ -3,6 +3,7 @@ package jp.systemengineeya.bookreview.api.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jp.systemengineeya.bookreview.api.dto.request.ReviewRequest;
 import jp.systemengineeya.bookreview.api.dto.response.ReviewResponse;
@@ -14,6 +15,7 @@ import jp.systemengineeya.bookreview.api.mapper.mybatis.BookMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.ReviewMapper;
 
 @Service
+@Transactional
 public class ReviewService {
 
     private final ReviewMapper reviewMapper;

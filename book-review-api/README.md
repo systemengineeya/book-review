@@ -19,6 +19,10 @@ Spring Bootで実装し、基本的なCRUD操作を提供します。
 ### Book
 - 書籍の作成 / 取得 / 更新 / 削除
 
+### Book Image
+- 書籍画像のアップロード
+- 書籍画像の削除
+
 ### Review
 - 書籍に対するレビューの作成 / 取得 / 更新 / 削除
 
@@ -32,6 +36,10 @@ Spring Bootで実装し、基本的なCRUD操作を提供します。
 - GET /books/{bookId}
 - PATCH /books/{bookId}
 - DELETE /books/{bookId}
+
+### Book Image
+- POST /books/{bookId}/images
+- DELETE /books/{bookId}/images/{imageId}
 
 ### Review
 - POST /books/{bookId}/reviews
