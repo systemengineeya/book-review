@@ -13,11 +13,19 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.net.URI;
+import java.nio.file.Paths;
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 /**
@@ -38,7 +46,6 @@ class BookApiIT {
         登録できる();
         取得できる();
         更新できる();
-        更新後取得できる();
         削除できる();
         削除後取得すると404になる();
     }
@@ -61,20 +68,44 @@ class BookApiIT {
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode json = objectMapper.readTree(response);
-
         bookId = json.get("id").asLong();
+        assertEquals("Java入門", json.get("title").asText());
+        assertEquals("山田太郎", json.get("author").asText());
+        String imageUrl = json.get("images")
+                .get(0)
+                .get("imageUrl")
+                .asText();
+        assertImageUrlIsUuidPng(imageUrl);
+    }
+
+    private void assertImageUrlIsUuidPng(String imageUrl) {
+        URI uri = URI.create(imageUrl);
+        String path = uri.getPath();
+        String fileName = Paths.get(path).getFileName().toString();
+        assertTrue(fileName.endsWith(".png"));
+        String uuidPart = fileName.replace(".png", "");
+        assertDoesNotThrow(() -> UUID.fromString(uuidPart));
     }
 
     void 取得できる() throws Exception {
-        mockMvc.perform(get("/books/{bookId}", bookId))
+        MvcResult result = mockMvc.perform(get("/books/{bookId}", bookId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(bookId))
                 .andExpect(jsonPath("$.title").value("Java入門"))
-                .andExpect(jsonPath("$.author").value("山田太郎"));
+                .andExpect(jsonPath("$.author").value("山田太郎"))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JsonNode json = new ObjectMapper().readTree(response);
+        String imageUrl = json.get("images")
+                .get(0)
+                .get("imageUrl")
+                .asText();
+        assertImageUrlIsUuidPng(imageUrl);
     }
 
     void 更新できる() throws Exception {
-        mockMvc.perform(patch("/books/{bookId}", bookId)
+        MvcResult result = mockMvc.perform(patch("/books/{bookId}", bookId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -83,14 +114,19 @@ class BookApiIT {
                           "author":"佐藤一郎"
                         }
                         """.formatted(bookId)))
-                .andExpect(status().isOk());
-    }
-
-    void 更新後取得できる() throws Exception {
-        mockMvc.perform(get("/books/{bookId}", bookId))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(bookId))
                 .andExpect(jsonPath("$.title").value("Java入門 改訂版"))
-                .andExpect(jsonPath("$.author").value("佐藤一郎"));
+                .andExpect(jsonPath("$.author").value("佐藤一郎"))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JsonNode json = new ObjectMapper().readTree(response);
+        String imageUrl = json.get("images")
+                .get(0)
+                .get("imageUrl")
+                .asText();
+        assertImageUrlIsUuidPng(imageUrl);
     }
 
     void 削除できる() throws Exception {
