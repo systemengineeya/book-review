@@ -1,5 +1,6 @@
 package jp.systemengineeya.bookreview.api.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,12 +22,13 @@ public class BookImageController {
 
     private final BookImageService bookImageService;
     private final BookImageResponseMapper bookImageResponseMapper;
+
     @PostMapping
     public ResponseEntity<BookImageResponse> upload(
             @PathVariable Long bookId,
             @RequestParam MultipartFile image) {
 
-        return ResponseEntity.ok(
+        return ResponseEntity.status(HttpStatus.CREATED).body(
                 bookImageResponseMapper.toResponse(bookImageService.upload(bookId, image)));
     }
 
