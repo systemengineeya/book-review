@@ -14,7 +14,6 @@ import jp.systemengineeya.bookreview.api.entity.BookExample;
 import jp.systemengineeya.bookreview.api.exception.NotFoundException;
 import jp.systemengineeya.bookreview.api.mapper.dto.BookDtoMapper;
 import jp.systemengineeya.bookreview.api.mapper.dto.BookResultMapper;
-import jp.systemengineeya.bookreview.api.mapper.mybatis.BookImageMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.BookMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
