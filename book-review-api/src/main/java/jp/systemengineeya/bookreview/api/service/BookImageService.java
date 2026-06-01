@@ -3,6 +3,7 @@ package jp.systemengineeya.bookreview.api.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import jp.systemengineeya.bookreview.api.dto.result.BookImageResult;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BookImageService {
     private final BookMapper bookMapper;
     private final BookImageMapper bookImageMapper;
