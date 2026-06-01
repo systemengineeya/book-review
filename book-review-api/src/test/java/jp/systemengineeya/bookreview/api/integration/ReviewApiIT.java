@@ -49,25 +49,25 @@ class ReviewApiIT {
     }
 
     void bookを登録する() throws Exception {
-            MockMultipartFile image = new MockMultipartFile(
-                            "images",
-                            "test.png",
-                            MediaType.IMAGE_PNG_VALUE,
-                            "dummy image".getBytes());
+        MockMultipartFile image = new MockMultipartFile(
+                "images",
+                "test.png",
+                MediaType.IMAGE_PNG_VALUE,
+                "dummy image".getBytes());
 
-            MvcResult result = mockMvc.perform(multipart("/books")
-                            .file(image)
-                            .param("title", "Java入門")
-                            .param("author", "山田太郎"))
-                            .andExpect(status().isCreated())
-                            .andReturn();
+        MvcResult result = mockMvc.perform(multipart("/books")
+                .file(image)
+                .param("title", "Java入門")
+                .param("author", "山田太郎"))
+                .andExpect(status().isCreated())
+                .andReturn();
 
-            String response = result.getResponse().getContentAsString();
+        String response = result.getResponse().getContentAsString();
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode json = objectMapper.readTree(response);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode json = objectMapper.readTree(response);
 
-            bookId = json.get("id").asLong();
+        bookId = json.get("id").asLong();
     }
 
     void reviewを登録する() throws Exception {
