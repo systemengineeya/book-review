@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jp.systemengineeya.bookreview.api.testutil.ImageUrlAssert;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,16 +77,7 @@ class BookApiIT {
                 .get(0)
                 .get("imageUrl")
                 .asText();
-        assertImageUrlIsUuidPng(imageUrl);
-    }
-
-    private void assertImageUrlIsUuidPng(String imageUrl) {
-        URI uri = URI.create(imageUrl);
-        String path = uri.getPath();
-        String fileName = Paths.get(path).getFileName().toString();
-        assertTrue(fileName.endsWith(".png"));
-        String uuidPart = fileName.replace(".png", "");
-        assertDoesNotThrow(() -> UUID.fromString(uuidPart));
+        ImageUrlAssert.assertImageUrlIsUuidPng(imageUrl);
     }
 
     void 取得できる() throws Exception {
@@ -101,7 +94,7 @@ class BookApiIT {
                 .get(0)
                 .get("imageUrl")
                 .asText();
-        assertImageUrlIsUuidPng(imageUrl);
+        ImageUrlAssert.assertImageUrlIsUuidPng(imageUrl);
     }
 
     void 更新できる() throws Exception {
@@ -126,7 +119,7 @@ class BookApiIT {
                 .get(0)
                 .get("imageUrl")
                 .asText();
-        assertImageUrlIsUuidPng(imageUrl);
+        ImageUrlAssert.assertImageUrlIsUuidPng(imageUrl);
     }
 
     void 削除できる() throws Exception {
