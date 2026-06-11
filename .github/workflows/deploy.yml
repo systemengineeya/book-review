@@ -50,7 +50,7 @@ jobs:
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy book-review-api ${GITHUB_SHA}" \
-            --parameters "commands=[\"set -e\",\"aws s3 cp s3://${S3_BUCKET}/${S3_KEY} /home/ec2-user/book-review-api.jar\",\"sudo systemctl restart book-review-api\"]" \
+            --parameters "commands=[\"set -e\",\"aws s3 cp s3://${S3_BUCKET}/${S3_KEY} /home/ec2-user/book-review-api.jar\",\"sudo systemctl restart bookreview.service\"]" \
             --query "Command.CommandId" \
             --output text)
 
