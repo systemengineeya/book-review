@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import jp.systemengineeya.bookreview.api.dto.request.BookRequest;
 import jp.systemengineeya.bookreview.api.dto.result.BookImageResult;
 import jp.systemengineeya.bookreview.api.dto.result.BookResult;
 import jp.systemengineeya.bookreview.api.entity.Book;
@@ -15,6 +14,7 @@ import jp.systemengineeya.bookreview.api.exception.NotFoundException;
 import jp.systemengineeya.bookreview.api.mapper.dto.BookDtoMapper;
 import jp.systemengineeya.bookreview.api.mapper.dto.BookResultMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.BookMapper;
+import jp.systemengineeya.bookreview.generated.model.BookRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

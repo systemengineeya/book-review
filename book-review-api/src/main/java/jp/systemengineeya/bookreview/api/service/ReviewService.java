@@ -5,14 +5,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jp.systemengineeya.bookreview.api.dto.request.ReviewRequest;
-import jp.systemengineeya.bookreview.api.dto.response.ReviewResponse;
 import jp.systemengineeya.bookreview.api.entity.Review;
 import jp.systemengineeya.bookreview.api.entity.ReviewExample;
 import jp.systemengineeya.bookreview.api.exception.NotFoundException;
 import jp.systemengineeya.bookreview.api.mapper.dto.ReviewDtoMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.BookMapper;
 import jp.systemengineeya.bookreview.api.mapper.mybatis.ReviewMapper;
+import jp.systemengineeya.bookreview.generated.model.ReviewRequest;
+import jp.systemengineeya.bookreview.generated.model.ReviewResponse;
 
 @Service
 @Transactional

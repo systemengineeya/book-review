@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 
-import jp.systemengineeya.bookreview.api.dto.response.BookResponse;
 import jp.systemengineeya.bookreview.api.dto.result.BookResult;
+import jp.systemengineeya.bookreview.generated.model.BookResponse;
 
 @Mapper(componentModel = "spring")
 public interface BookResponseMapper {

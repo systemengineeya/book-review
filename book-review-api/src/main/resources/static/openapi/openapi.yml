@@ -22,27 +22,29 @@ paths:
                   $ref: "#/components/schemas/BookResponse"
     post:
       tags:
-      - book-controller
+        - book-controller
       operationId: createBook
-      parameters:
-      - name: title
-        in: query
+
+      requestBody:
         required: true
-        schema:
-          type: string
-      - name: author
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: images
-        in: query
-        required: true
-        schema:
-          type: array
-          items:
-            type: string
-            format: binary
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - author
+                - images
+              properties:
+                title:
+                  type: string
+                author:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
       responses:
         "200":
           description: OK

@@ -4,15 +4,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jp.systemengineeya.bookreview.api.dto.request.ReviewRequest;
-import jp.systemengineeya.bookreview.api.dto.response.ReviewResponse;
 import jp.systemengineeya.bookreview.api.service.ReviewService;
+import jp.systemengineeya.bookreview.generated.api.ReviewControllerApi;
+import jp.systemengineeya.bookreview.generated.model.ReviewRequest;
+import jp.systemengineeya.bookreview.generated.model.ReviewResponse;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/books/{bookId}/reviews")
-public class ReviewController {
+public class ReviewController implements ReviewControllerApi {
 
     private final ReviewService reviewService;
 
@@ -20,32 +20,32 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping
+    @Override
     public ResponseEntity<ReviewResponse> createReview(@PathVariable Long bookId, @RequestBody ReviewRequest review) {
         ReviewResponse createdReview = reviewService.createReview(bookId, review);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
     }
 
-    @GetMapping
+    @Override
     public ResponseEntity<List<ReviewResponse>> getReviews(@PathVariable Long bookId) {
         List<ReviewResponse> reviews = reviewService.getReviewsByBookId(bookId);
         return ResponseEntity.ok(reviews);
     }
 
-    @GetMapping("/{reviewId}")
+    @Override
     public ResponseEntity<ReviewResponse> getReview(@PathVariable Long bookId, @PathVariable Long reviewId) {
         ReviewResponse review = reviewService.getReviewById(bookId, reviewId);
         return ResponseEntity.ok(review);
     }
 
-    @PatchMapping("/{reviewId}")
+    @Override
     public ResponseEntity<ReviewResponse> updateReview(@PathVariable Long bookId, @PathVariable Long reviewId,
             @RequestBody ReviewRequest updatedReview) {
         ReviewResponse review = reviewService.updateReview(bookId, reviewId, updatedReview);
         return ResponseEntity.ok(review);
     }
 
-    @DeleteMapping("/{reviewId}")
+    @Override
     public ResponseEntity<Void> deleteReview(@PathVariable Long bookId, @PathVariable Long reviewId) {
         reviewService.deleteReview(bookId, reviewId);
         return ResponseEntity.noContent().build();
