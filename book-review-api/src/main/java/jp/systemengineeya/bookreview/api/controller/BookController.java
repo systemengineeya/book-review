@@ -2,7 +2,7 @@ package jp.systemengineeya.bookreview.api.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import jp.systemengineeya.bookreview.api.dto.result.BookResult;
@@ -42,19 +42,19 @@ public class BookController implements BookControllerApi{
     }
 
     @Override
-    public ResponseEntity<BookResponse> getBook(@PathVariable Long bookId) {
+    public ResponseEntity<BookResponse> getBook(Long bookId) {
         BookResult bookResult = bookService.getBookById(bookId);
         return ResponseEntity.ok(bookResponseMapper.toResponse(bookResult));
     }
 
     @Override
-    public ResponseEntity<BookResponse> updateBook(@PathVariable Long bookId, @RequestBody BookRequest updatedBook) {
+    public ResponseEntity<BookResponse> updateBook(Long bookId, BookRequest updatedBook) {
         BookResult bookResult = bookService.updateBook(bookId, updatedBook);
         return ResponseEntity.ok(bookResponseMapper.toResponse(bookResult));
     }
 
     @Override
-    public ResponseEntity<Void> deleteBook(@PathVariable Long bookId) {
+    public ResponseEntity<Void> deleteBook(Long bookId) {
         bookService.deleteBook(bookId);
         return ResponseEntity.noContent().build();
     }

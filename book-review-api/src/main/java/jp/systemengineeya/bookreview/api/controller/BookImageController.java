@@ -2,8 +2,6 @@ package jp.systemengineeya.bookreview.api.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,8 +20,8 @@ public class BookImageController implements BookImageControllerApi {
 
     @Override
     public ResponseEntity<BookImageResponse> upload(
-            @PathVariable Long bookId,
-            @RequestParam MultipartFile image) {
+            Long bookId,
+            MultipartFile image) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 bookImageResponseMapper.toResponse(bookImageService.upload(bookId, image)));
@@ -31,8 +29,8 @@ public class BookImageController implements BookImageControllerApi {
 
     @Override
     public ResponseEntity<Void> delete(
-            @PathVariable Long bookId,
-            @PathVariable Long imageId) {
+            Long bookId,
+            Long imageId) {
 
         bookImageService.delete(bookId, imageId);
 
