@@ -15,56 +15,9 @@ paths:
   /books/{bookId}/reviews/{reviewId}:
     $ref: './paths/reviews.yml#/reviewById'
   /books/{bookId}/images:
-    post:
-      tags:
-      - book-image-controller
-      operationId: upload
-      parameters:
-      - name: bookId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                image:
-                  type: string
-                  format: binary
-              required:
-              - image
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BookImageResponse"
+    $ref: './paths/book-images.yml#/images'
   /books/{bookId}/images/{imageId}:
-    delete:
-      tags:
-      - book-image-controller
-      operationId: delete
-      parameters:
-      - name: bookId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: imageId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: OK
+    $ref: './paths/book-images.yml#/imageById'
 components:
   schemas:
     BookRequest:
