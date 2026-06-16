@@ -1,0 +1,22 @@
+BookRequest:
+  type: object
+  properties:
+    title:
+      type: string
+    author:
+      type: string
+
+BookResponse:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    title:
+      type: string
+    author:
+      type: string
+    images:
+      type: array
+      items:
+        $ref: './book-image.yml#/BookImageResponse'
