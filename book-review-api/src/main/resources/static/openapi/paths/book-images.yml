@@ -4,7 +4,7 @@ images:
       - book-image-controller
     operationId: upload
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
 
     requestBody:
       required: true
@@ -33,8 +33,8 @@ imageById:
       - book-image-controller
     operationId: delete
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
-      - $ref: '../parameters/path-parameters.yml#/ImageId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+      - $ref: "../parameters/path-parameters.yml#/ImageId"
 
     responses:
       "200":

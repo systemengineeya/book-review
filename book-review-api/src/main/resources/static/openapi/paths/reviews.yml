@@ -4,7 +4,7 @@ reviews:
       - review-controller
     operationId: getReviews
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
     responses:
       "200":
         description: OK
@@ -20,7 +20,7 @@ reviews:
       - review-controller
     operationId: createReview
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
     requestBody:
       required: true
       content:
@@ -41,8 +41,8 @@ reviewById:
       - review-controller
     operationId: getReview
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
-      - $ref: '../parameters/path-parameters.yml#/ReviewId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+      - $ref: "../parameters/path-parameters.yml#/ReviewId"
     responses:
       "200":
         description: OK
@@ -56,8 +56,8 @@ reviewById:
       - review-controller
     operationId: updateReview
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
-      - $ref: '../parameters/path-parameters.yml#/ReviewId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+      - $ref: "../parameters/path-parameters.yml#/ReviewId"
     requestBody:
       required: true
       content:
@@ -77,8 +77,8 @@ reviewById:
       - review-controller
     operationId: deleteReview
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
-      - $ref: '../parameters/path-parameters.yml#/ReviewId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+      - $ref: "../parameters/path-parameters.yml#/ReviewId"
     responses:
       "200":
         description: OK

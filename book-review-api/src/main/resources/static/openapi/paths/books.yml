@@ -51,7 +51,7 @@ bookById:
       - book-controller
     operationId: getBook
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
     responses:
       "200":
         description: OK
@@ -65,7 +65,7 @@ bookById:
       - book-controller
     operationId: updateBook
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
     requestBody:
       required: true
       content:
@@ -85,7 +85,7 @@ bookById:
       - book-controller
     operationId: deleteBook
     parameters:
-      - $ref: '../parameters/path-parameters.yml#/BookId'
+      - $ref: "../parameters/path-parameters.yml#/BookId"
     responses:
       "200":
         description: OK

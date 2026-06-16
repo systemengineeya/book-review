@@ -3,30 +3,30 @@ info:
   title: 書籍レビューAPI
   version: v0
 servers:
-- url: http://localhost:8080
-  description: Generated server url
+  - url: http://localhost:8080
+    description: Generated server url
 paths:
   /books:
-    $ref: './paths/books.yml#/books'
+    $ref: "./paths/books.yml#/books"
   /books/{bookId}:
-    $ref: './paths/books.yml#/bookById'
+    $ref: "./paths/books.yml#/bookById"
   /books/{bookId}/reviews:
-    $ref: './paths/reviews.yml#/reviews'
+    $ref: "./paths/reviews.yml#/reviews"
   /books/{bookId}/reviews/{reviewId}:
-    $ref: './paths/reviews.yml#/reviewById'
+    $ref: "./paths/reviews.yml#/reviewById"
   /books/{bookId}/images:
-    $ref: './paths/book-images.yml#/images'
+    $ref: "./paths/book-images.yml#/images"
   /books/{bookId}/images/{imageId}:
-    $ref: './paths/book-images.yml#/imageById'
+    $ref: "./paths/book-images.yml#/imageById"
 components:
   schemas:
     BookRequest:
-      $ref: './schemas/book.yml#/BookRequest'
+      $ref: "./schemas/book.yml#/BookRequest"
     BookResponse:
-      $ref: './schemas/book.yml#/BookResponse'
+      $ref: "./schemas/book.yml#/BookResponse"
     BookImageResponse:
-      $ref: './schemas/book-image.yml#/BookImageResponse'
+      $ref: "./schemas/book-image.yml#/BookImageResponse"
     ReviewRequest:
-      $ref: './schemas/review.yml#/ReviewRequest'
+      $ref: "./schemas/review.yml#/ReviewRequest"
     ReviewResponse:
-      $ref: './schemas/review.yml#/ReviewResponse'
+      $ref: "./schemas/review.yml#/ReviewResponse"

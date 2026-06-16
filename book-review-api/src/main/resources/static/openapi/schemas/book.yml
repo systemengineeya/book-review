@@ -19,4 +19,4 @@ BookResponse:
     images:
       type: array
       items:
-        $ref: './book-image.yml#/BookImageResponse'
+        $ref: "./book-image.yml#/BookImageResponse"
