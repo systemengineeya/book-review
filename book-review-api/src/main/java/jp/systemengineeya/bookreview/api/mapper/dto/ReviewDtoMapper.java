@@ -4,9 +4,9 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import jp.systemengineeya.bookreview.api.dto.request.ReviewRequest;
-import jp.systemengineeya.bookreview.api.dto.response.ReviewResponse;
 import jp.systemengineeya.bookreview.api.entity.Review;
+import jp.systemengineeya.bookreview.generated.model.ReviewRequest;
+import jp.systemengineeya.bookreview.generated.model.ReviewResponse;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ReviewDtoMapper {

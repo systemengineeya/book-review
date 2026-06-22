@@ -1,0 +1,8 @@
+BookImageResponse:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    imageUrl:
+      type: string

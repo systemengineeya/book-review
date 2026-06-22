@@ -1,0 +1,84 @@
+reviews:
+  get:
+    tags:
+      - review-controller
+    operationId: getReviews
+    parameters:
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/review.yml#/ReviewResponse"
+
+  post:
+    tags:
+      - review-controller
+    operationId: createReview
+    parameters:
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/review.yml#/ReviewRequest"
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/review.yml#/ReviewResponse"
+
+reviewById:
+  get:
+    tags:
+      - review-controller
+    operationId: getReview
+    parameters:
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+      - $ref: "../parameters/path-parameters.yml#/ReviewId"
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/review.yml#/ReviewResponse"
+
+  patch:
+    tags:
+      - review-controller
+    operationId: updateReview
+    parameters:
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+      - $ref: "../parameters/path-parameters.yml#/ReviewId"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/review.yml#/ReviewRequest"
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/review.yml#/ReviewResponse"
+
+  delete:
+    tags:
+      - review-controller
+    operationId: deleteReview
+    parameters:
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+      - $ref: "../parameters/path-parameters.yml#/ReviewId"
+    responses:
+      "200":
+        description: OK

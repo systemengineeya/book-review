@@ -100,6 +100,11 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.8.8</version>
 		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.7</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -156,6 +161,39 @@
 					<user>postgres</user>
 					<password>password</password>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>7.13.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>
+        ${project.basedir}/src/main/resources/static/openapi/openapi.yml
+    </inputSpec>
+							<generatorName>spring</generatorName>
+							<output>
+        ${project.build.directory}/generated-sources/openapi
+    </output>
+							<apiPackage>
+        jp.systemengineeya.bookreview.generated.api
+    </apiPackage>
+							<modelPackage>
+        jp.systemengineeya.bookreview.generated.model
+    </modelPackage>
+							<configOptions>
+								<interfaceOnly>true</interfaceOnly>
+								<useSpringBoot3>true</useSpringBoot3>
+								<useTags>true</useTags>
+							</configOptions>
+							<skipValidateSpec>true</skipValidateSpec>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

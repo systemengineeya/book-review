@@ -1,0 +1,23 @@
+BookId:
+  name: bookId
+  in: path
+  required: true
+  schema:
+    type: integer
+    format: int64
+
+ReviewId:
+  name: reviewId
+  in: path
+  required: true
+  schema:
+    type: integer
+    format: int64
+
+ImageId:
+  name: imageId
+  in: path
+  required: true
+  schema:
+    type: integer
+    format: int64

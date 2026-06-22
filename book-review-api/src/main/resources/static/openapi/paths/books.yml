@@ -1,0 +1,91 @@
+books:
+  get:
+    tags:
+      - book-controller
+    operationId: getBooks
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/book.yml#/BookResponse"
+
+  post:
+    tags:
+      - book-controller
+    operationId: createBook
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - title
+              - author
+              - images
+            properties:
+              title:
+                type: string
+              author:
+                type: string
+              images:
+                type: array
+                items:
+                  type: string
+                  format: binary
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/book.yml#/BookResponse"
+
+bookById:
+  get:
+    tags:
+      - book-controller
+    operationId: getBook
+    parameters:
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/book.yml#/BookResponse"
+
+  patch:
+    tags:
+      - book-controller
+    operationId: updateBook
+    parameters:
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/book.yml#/BookRequest"
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/book.yml#/BookResponse"
+
+  delete:
+    tags:
+      - book-controller
+    operationId: deleteBook
+    parameters:
+      - $ref: "../parameters/path-parameters.yml#/BookId"
+    responses:
+      "200":
+        description: OK
