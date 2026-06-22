@@ -3,7 +3,7 @@ info:
   title: 書籍レビューAPI
   version: v0
 servers:
-  - url: http://localhost:8080
+  - url: /
     description: Generated server url
 paths:
   /books:
