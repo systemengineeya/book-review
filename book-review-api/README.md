@@ -11,6 +11,8 @@ Spring Bootで実装し、基本的なCRUD操作を提供します。
 - Spring Boot（フレームワーク）
 - Maven（ビルドツール）
 - RESTful API（設計）
+- OpenAPI（API仕様定義・コード生成）
+- Flyway（データベースマイグレーション管理）
 
 ---
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class BookController implements BookControllerApi{
+public class BookController implements BookControllerApi {
 
     private final BookService bookService;
     private final BookResponseMapper bookResponseMapper;
