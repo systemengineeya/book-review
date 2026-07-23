@@ -7,12 +7,20 @@ Spring Bootで実装し、基本的なCRUD操作を提供します。
 ---
 
 ## 技術スタック
-- Java 17（言語）
-- Spring Boot（フレームワーク）
-- Maven（ビルドツール）
-- RESTful API（設計）
-- OpenAPI（API仕様定義・コード生成）
-- Flyway（データベースマイグレーション管理）
+| カテゴリ | 使用技術 |
+|----------|----------|
+| 言語 | Java 17 |
+| フレームワーク | Spring Boot 3 |
+| ビルドツール | Maven |
+| データベース | PostgreSQL |
+| データアクセス | MyBatis |
+| データベースマイグレーション | Flyway |
+| API設計 | RESTful API |
+| API仕様 | OpenAPI（Swagger） |
+| クラウド | AWS（EC2、RDS、Amazon S3） |
+| ローカル開発環境 | Docker Compose、LocalStack |
+| テスト | JUnit 5、Mockito、Testcontainers |
+| CI | GitHub Actions |
 
 ---
 
@@ -70,4 +78,10 @@ Spring Bootで実装し、基本的なCRUD操作を提供します。
 ### ビルドしたjarの実行
 ```
 java -jar target/book-review-api-0.0.1-SNAPSHOT.jar
+```
+
+### OpenAPIからソースコードを生成
+
+```bash
+./mvnw clean generate-sources
 ```
