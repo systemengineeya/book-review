@@ -24,6 +24,52 @@ Spring Bootで実装し、基本的なCRUD操作を提供します。
 
 ---
 
+## システム構成図
+### 本番環境
+```mermaid
+graph TD
+
+    Client[Client]
+
+    subgraph AWS
+        subgraph EC2[Amazon EC2]
+            App[Spring Boot]
+        end
+
+        subgraph RDS[Amazon RDS]
+            DB[(PostgreSQL)]
+        end
+
+        S3([Amazon S3])
+    end
+
+    Client --> App
+    App --> DB
+    App --> S3
+```
+
+### ローカル環境
+```mermaid
+graph TD
+
+    Client[Client]
+    App[Spring Boot]
+
+    subgraph Docker Compose
+        subgraph PostgreSQL Container
+            DB[(PostgreSQL)]
+        end
+
+        subgraph LocalStack Container
+            S3([S3 Emulator])
+        end
+    end
+
+    Client --> App
+    App --> DB
+    App --> S3
+```
+
 ## 機能
 
 ### Book
